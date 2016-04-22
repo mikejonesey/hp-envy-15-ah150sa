@@ -5,20 +5,20 @@
  * 
  * Disassembling to symbolic ASL+ operators
  *
- * Disassembly of dsdt.aml, Fri Apr 22 20:07:00 2016
+ * Disassembly of dsdt.aml, Wed Apr 20 09:13:17 2016
  *
  * Original Table Header:
  *     Signature        "DSDT"
- *     Length           0x00008D5F (36191)
+ *     Length           0x00008D2D (36141)
  *     Revision         0x01 **** 32-bit table (V1), no 64-bit math support
- *     Checksum         0x41
+ *     Checksum         0xDC
  *     OEM ID           "HPQOEM"
  *     OEM Table ID     "SLIC-MPC"
  *     OEM Revision     0x00040000 (262144)
- *     Compiler ID      "INTL"
- *     Compiler Version 0x20160318 (538313496)
+ *     Compiler ID      "ACPI"
+ *     Compiler Version 0x00040000 (262144)
  */
-DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
+DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 {
     External (_PR_.C000._PPC, MethodObj)    // 0 Arguments
     External (_PR_.C000.PPCV, IntObj)
@@ -36,6 +36,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
     External (AFN4, MethodObj)    // 1 Arguments
     External (AFN7, MethodObj)    // 1 Arguments
     External (DEB2, IntObj)
+//    External (WLVD, UnknownObj)
 
     OperationRegion (SPRT, SystemIO, 0xB0, 0x02)
     Field (SPRT, ByteAcc, Lock, Preserve)
@@ -61,8 +62,11 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
 
     Method (CMSW, 2, NotSerialized)
     {
-        CMSI = Arg0
-        CMSD = Arg1
+	//Mike edit
+	//CMSI = Arg0
+	//CMSD = Arg1
+	Store (Arg0, CMSI)
+	Store (Arg1, CMSD)
     }
 
     OperationRegion (DBG0, SystemIO, 0x80, One)
@@ -246,8 +250,11 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
     })
     Method (GPRW, 2, NotSerialized)
     {
+	//Mike edit
         PRWP [Zero] = Arg0
+	//Store(Arg0, PRWP[Zero])
         PRWP [One] = Arg1
+        //Store(Arg1, PRWP[One])
         If ((DAS3 == Zero))
         {
             If ((Arg1 <= 0x03))
@@ -331,7 +338,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
         Return (Local3)
     }
 
-    OperationRegion (GNVS, SystemMemory, 0xDFB37E98, 0x23)
+    OperationRegion (GNVS, SystemMemory, 0xDFB37E98, 0x00000023)
     Field (GNVS, AnyAcc, NoLock, Preserve)
     {
         DAS3,   8, 
@@ -365,7 +372,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
         BDID,   8
     }
 
-    OperationRegion (OGNS, SystemMemory, 0xDFB37E18, 0x0E)
+    OperationRegion (OGNS, SystemMemory, 0xDFB37E18, 0x0000000E)
     Field (OGNS, AnyAcc, Lock, Preserve)
     {
         EGPO,   8, 
@@ -383,7 +390,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
         OSYS,   16
     }
 
-    OperationRegion (NVST, SystemMemory, 0xDFB39E91, 0x012D)
+    OperationRegion (NVST, SystemMemory, 0xDFB39E91, 0x0000012D)
     Field (NVST, AnyAcc, Lock, Preserve)
     {
         SMIF,   8, 
@@ -419,6 +426,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
         RDHW,   8
     }
 
+    //Mike edit
+    //Method (SCMP, 2, NotSerialized)
     Method (SCMP, 2, Serialized)
     {
         Name (STG1, Buffer (0x50) {})
@@ -615,7 +624,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
 
     Name (BUFN, Zero)
     Name (MBUF, Buffer (0x1000) {})
-    OperationRegion (MDBG, SystemMemory, 0xDFB1E018, 0x1004)
+    OperationRegion (MDBG, SystemMemory, 0xDFB1E018, 0x00001004)
     Field (MDBG, AnyAcc, Lock, Preserve)
     {
         MDG0,   32768
@@ -805,7 +814,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
 
             Method (_TMP, 0, Serialized)  // _TMP: Temperature
             {
-                Local1 = (FFAL | PDPN) /* \PDPN */
+                Local1 = (FFAL | PDPN)
                 If ((Local1 || BOTP))
                 {
                     Return (0x0E30)
@@ -4786,6 +4795,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                     Return (One)
                 }
 
+		//Mike edit
+                //Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
                 Method (_CRS, 0, Serialized)  // _CRS: Current Resource Settings
                 {
                     Name (BUF0, ResourceTemplate ()
@@ -5123,6 +5134,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                     }
                 }
 
+		//Mike edit
+                //Method (RHRS, 0, NotSerialized)
                 Method (RHRS, 0, Serialized)
                 {
                     Name (RBUF, ResourceTemplate ()
@@ -6050,7 +6063,9 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                             }
                             Else
                             {
-                                Arg0 = ~Arg1
+				//Mike edit
+                                //~Arg1
+				Not(Arg1,Arg0)
                                 Arg1++
                                 ACCW (0x29, Arg1)
                             }
@@ -7166,6 +7181,32 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
             APMC = 0xBE
             Sleep (One)
         }
+
+
+//        Device (WLBU)
+//        {
+//            Name (_HID, EisaId ("HPQ6001"))  // _HID: Hardware ID
+//            Name (WLDP, 0xFF)
+//            Method (_STA, 0, NotSerialized)  // _STA: Status
+//            {
+//                If ((WLDP == 0xFF))
+//                {
+//                    Local0 = Zero
+//                    OSTP ()
+//                    If ((((OSYS == 0x07DC) || (OSYS == 0x07DD)) || (OSYS == 0x07DF)))
+//                    {
+//                        If (((WLVD != Zero) && (WLVD != 0xFFFF)))
+//                        {
+//                            Local0 = 0x0F
+//                        }
+//                    }
+//
+//                    WLDP = Local0
+//                }
+//
+//                Return (WLDP) /* \_SB_.WLBU.WLDP */
+//            }
+//        }
 
         Name (LSTA, One)
         Device (LID)
@@ -8813,6 +8854,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
             }
         }
 
+	//Mike edit
+        //Method (RHRS, 0, NotSerialized)
         Method (RHRS, 0, Serialized)
         {
             Name (RBUF, ResourceTemplate ()
@@ -8885,6 +8928,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
             Name (_HID, "AMD0030")  // _HID: Hardware ID
             Name (_CID, "AMD0030")  // _CID: Compatible ID
             Name (_UID, Zero)  // _UID: Unique ID
+            //Mike edit
+            //Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             Method (_CRS, 0, Serialized)  // _CRS: Current Resource Settings
             {
                 Name (RBUF, ResourceTemplate ()
@@ -9366,7 +9411,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
 
     Scope (\)
     {
-        OperationRegion (COMP, SystemMemory, 0xDFB75C98, 0x0200)
+        OperationRegion (COMP, SystemMemory, 0xDFB75C98, 0x00000200)
         Field (COMP, AnyAcc, Lock, Preserve)
         {
             IDMN,   16, 
@@ -9871,6 +9916,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                 }
             }
 
+            //Mike edit
+            //Method (APCL, 0, NotSerialized)
             Method (APCL, 0, Serialized)
             {
                 Local0 = PTVL /* \_SB_.PCI0.LPC0.EC0_.PTVL */
@@ -10230,6 +10277,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                 Return (BIFX (One))
             }
 
+            //Mike edit
+            //Method (BIFX, 1, NotSerialized)
             Method (BIFX, 1, Serialized)
             {
                 Name (STAX, Package (0x14)
@@ -10281,7 +10330,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                     STAX [One] = ^^EC0.BAM0 /* \_SB_.PCI0.LPC0.EC0_.BAM0 */
                     Local0 = ^^EC0.BDN0 /* \_SB_.PCI0.LPC0.EC0_.BDN0 */
                     BMDL = Local0
-                    STAX [0x02] = (^^EC0.BDC0 * BASC) /* \_SB_.PCI0.LPC0.BAT1.BASC */
+                    STAX [0x02] = (^^EC0.BDC0 * BASC)
                     Sleep (Zero)
                     STAX [0x05] = ^^EC0.BDV0 /* \_SB_.PCI0.LPC0.EC0_.BDV0 */
                     Sleep (Zero)
@@ -10294,7 +10343,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                         Local2 = ^^EC0.BFC0 /* \_SB_.PCI0.LPC0.EC0_.BFC0 */
                     }
 
-                    Local2 *= BASC /* \_SB_.PCI0.LPC0.BAT1.BASC */
+                    Local2 = (Local2 * BASC)
                     Sleep (Zero)
                     STAX [0x03] = Local2
                     Divide (Local2, 0x64, Local0, Local1)
@@ -10356,7 +10405,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     PBST [One] = Local4
                     Sleep (Zero)
-                    PBST [0x02] = (^^EC0.BRC0 * BASC) /* \_SB_.PCI0.LPC0.BAT1.BASC */
+                    PBST [0x02] = (^^EC0.BRC0 * BASC)
                     Sleep (Zero)
                     PBST [0x03] = ^^EC0.BPV0 /* \_SB_.PCI0.LPC0.EC0_.BPV0 */
                     Sleep (Zero)
@@ -10539,6 +10588,18 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
             PWRS = Zero
         }
 
+//        Method (_Q40, 0, NotSerialized)  // _Qxx: EC Query
+//        {
+//            P80H = 0x40
+//            If ((((OSYS == 0x07DC) || (OSYS == 0x07DD)) || (OSYS == 0x07DF)))
+//            {
+//                Notify (WLBU, 0x80) // Status Change
+//            }
+//            Else
+//            {
+//            }
+//        }
+
         Method (_Q42, 0, NotSerialized)  // _Qxx: EC Query
         {
             P80H = 0x42
@@ -10630,6 +10691,8 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
                 }
             }
 
+            //Mike edit
+            //Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
             Method (_CRS, 0, Serialized)  // _CRS: Current Resource Settings
             {
                 Name (RBUF, ResourceTemplate ()

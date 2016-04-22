@@ -5,7 +5,7 @@
  * 
  * Disassembling to symbolic ASL+ operators
  *
- * Disassembly of ssdt1.aml, Fri Apr 22 20:07:00 2016
+ * Disassembly of ssdt1.aml, Wed Apr 20 09:13:17 2016
  *
  * Original Table Header:
  *     Signature        "SSDT"
