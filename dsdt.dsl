@@ -5,7 +5,7 @@
  * 
  * Disassembling to symbolic ASL+ operators
  *
- * Disassembly of dsdt.dat, Fri Apr 22 20:05:39 2016
+ * Disassembly of dsdt.aml, Fri Apr 22 20:07:00 2016
  *
  * Original Table Header:
  *     Signature        "DSDT"
@@ -20,33 +20,6 @@
  */
 DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
 {
-    /*
-     * iASL Warning: There were 12 external control methods found during
-     * disassembly, but only 11 were resolved (1 unresolved). Additional
-     * ACPI tables may be required to properly disassemble the code. This
-     * resulting disassembler output file may not compile because the
-     * disassembler did not know how many arguments to assign to the
-     * unresolved methods. Note: SSDTs can be dynamically loaded at
-     * runtime and may or may not be available via the host OS.
-     *
-     * To specify the tables needed to resolve external control method
-     * references, the -e option can be used to specify the filenames.
-     * Example iASL invocations:
-     *     iasl -e ssdt1.aml ssdt2.aml ssdt3.aml -d dsdt.aml
-     *     iasl -e dsdt.aml ssdt2.aml -d ssdt1.aml
-     *     iasl -e ssdt*.aml -d dsdt.aml
-     *
-     * In addition, the -fe option can be used to specify a file containing
-     * control method external declarations with the associated method
-     * argument counts. Each line of the file must be of the form:
-     *     External (<method pathname>, MethodObj, <argument count>)
-     * Invocation:
-     *     iasl -fe refs.txt -d dsdt.aml
-     *
-     * The following methods were unresolved and many not compile properly
-     * because the disassembler had to guess at the number of arguments
-     * required for each:
-     */
     External (_PR_.C000._PPC, MethodObj)    // 0 Arguments
     External (_PR_.C000.PPCV, IntObj)
     External (_PR_.C001._PPC, MethodObj)    // 0 Arguments
@@ -62,9 +35,7 @@ DefinitionBlock ("", "DSDT", 1, "HPQOEM", "SLIC-MPC", 0x00040000)
     External (_SB_.WMID.WEI1, IntObj)
     External (AFN4, MethodObj)    // 1 Arguments
     External (AFN7, MethodObj)    // 1 Arguments
-    External (ALIB, MethodObj)    // Warning: Unknown method, guessing 2 arguments
     External (DEB2, IntObj)
-    External (WMID, UnknownObj)
 
     OperationRegion (SPRT, SystemIO, 0xB0, 0x02)
     Field (SPRT, ByteAcc, Lock, Preserve)
