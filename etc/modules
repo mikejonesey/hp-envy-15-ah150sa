@@ -1,0 +1,39 @@
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+
+# 00:18.3 0600: 1022:1573
+# 00:18.3 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 1573
+k10temp
+
+# 00:18.4 Host bridge: Advanced Micro Devices, Inc. [AMD] Device 15fam15h_power
+fam15h_power
+
+# Family		AMD A-Series Processors
+# Line			AMD A10-Series APU for Laptops
+# Model			A10-8700P with Radeon™ R6 Graphics
+# OPN Tray		AM870PAAY43KA
+# Total L2 Cache	2 MB
+# Unlocked		No
+# CMOS			28nm
+# PCI Express Version	PCIe 3.0
+# Socket		FP4
+# Base Clock Speed	1.8 GHz
+# Max Turbo Core Speed	3.2 GHz
+# Max Temps		90° C
+# TDP			15 W
+amdgpu
+
+# Graphics
+#radeonsi
+
+# Encryption
+ecryptfs
+
+# Compat...
+hp_wmi
+
+# usb / pci
+ehci_hcd
+ehci_pci
