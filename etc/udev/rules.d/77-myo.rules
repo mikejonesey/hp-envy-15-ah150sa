@@ -1,0 +1,3 @@
+# BLuegiga BLED112
+#SYMLINKED for easy use later
+ATTRS{idVendor}==“2458”, ATTRS{idProduct}==“0001”, ENV{ID_MM_DEVICE_IGNORE}=“1”, SYMLINK=“bluegiga/bled112”

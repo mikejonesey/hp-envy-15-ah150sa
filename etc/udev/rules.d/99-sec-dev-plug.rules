@@ -1,0 +1,3 @@
+ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0010|0110|0111|0114|0116|0401|0403|0405|0407|0410", ACTION=="add", RUN+="/usr/local/bin/secdev_unlock.sh"
+ATTRS{idVendor}=="1050", ATTRS{idProduct}=="0010|0110|0111|0114|0116|0401|0403|0405|0407|0410", ACTION=="remove", RUN+="/usr/local/bin/secdev_lock.sh"
+

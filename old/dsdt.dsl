@@ -842,6 +842,26 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
         Zero, 
         Zero
     })
+
+//BEGIN Mike Add
+    //sleeping w/CPU context
+    Name (_S1, Package (0x04)  // _S1_: S1 System State
+    {
+        0x01, 
+        0x01, 
+        Zero, 
+        Zero
+    })
+    //light Suspend to RAM
+    Name (_S2, Package (0x04)  // _S2_: S2 System State
+    {
+        0x02, 
+        0x02, 
+        Zero, 
+        Zero
+    })
+//END Mike Add
+
     If ((DAS3 == One))
     {
         Name (_S3, Package (0x04)  // _S3_: S3 System State
@@ -8757,6 +8777,17 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
             }
         }
 
+//BEGIN Mike Add
+        Method (_S1W, 0, NotSerialized)  // _S1W: S1 Device Wake State
+        {
+            Return (0x04)
+        }
+        Method (_S2W, 0, NotSerialized)  // _S2W: S2 Device Wake State
+        {
+            Return (0x04)
+        }
+//END Mike Add
+
         Method (_S3W, 0, NotSerialized)  // _S3W: S3 Device Wake State
         {
             Return (0x04)
@@ -8816,6 +8847,17 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 Return (Zero)
             }
         }
+
+//BEGIN Mike Add
+        Method (_S1W, 0, NotSerialized)  // _S1W: S1 Device Wake State
+        {
+            Return (0x04)
+        }
+        Method (_S2W, 0, NotSerialized)  // _S2W: S2 Device Wake State
+        {
+            Return (0x04)
+        }
+//END Mike Add
 
         Method (_S3W, 0, NotSerialized)  // _S3W: S3 Device Wake State
         {
