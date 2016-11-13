@@ -538,6 +538,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 If (_OSI ("Windows 2006 SP1"))
                 {
+		    Store("Debug: Win06", Debug)
                     OSTB = 0x41
                     TPOS = 0x41
                     OSSP = One
@@ -546,6 +547,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 If (_OSI ("Windows 2009"))
                 {
+		    Store("Debug: Win09", Debug)
                     OSSP = One
                     OSTB = 0x50
                     TPOS = 0x50
@@ -554,6 +556,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 If (_OSI ("Windows 2012"))
                 {
+		    Store("Debug: Win12", Debug)
                     OSSP = One
                     OSTB = 0x60
                     TPOS = 0x60
@@ -562,6 +565,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 If (_OSI ("Windows 2013"))
                 {
+		    Store("Debug: Win13", Debug)
                     OSSP = One
                     OSTB = 0x61
                     TPOS = 0x61
@@ -570,6 +574,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 If (_OSI ("Windows 2015"))
                 {
+		    Store("Debug: Win15", Debug)
                     OSSP = One
                     OSTB = 0x70
                     TPOS = 0x70
@@ -578,6 +583,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 If (_OSI ("Linux"))
                 {
+		    Store("Debug: Linux", Debug)
                     LINX = One
                     OSTB = 0x80
                     TPOS = 0x80
@@ -623,11 +629,6 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
     Field (MDBG, AnyAcc, Lock, Preserve)
     {
         MDG0,   32768
-    }
-
-    Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current
-    {
-        Return (0x1E)
     }
 
     Method (DB2H, 1, Serialized)
@@ -1305,6 +1306,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
     Scope (_SB)
     {
+
         Device (PWRB)
         {
             Name (_HID, EisaId ("PNP0C0C") /* Power Button Device */)  // _HID: Hardware ID
@@ -2683,6 +2685,13 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                             0x64
                         }
                     })
+
+		    Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current
+		    {
+		        //Return (0x1E) // = 50, h=30
+		        Return (0x26) // = ?, h=20
+		    }
+
                     Method (_BCL, 0, NotSerialized)  // _BCL: Brightness Control Levels
                     {
                         Return (BCLB) /* \_SB_.PCI0.VGA_.LCD_.BCLB */
@@ -4073,6 +4082,13 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                                 0x64
                             }
                         })
+
+		        Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current
+		        {
+		            //Return (0x1E) // = 50, h=30
+		            Return (0x26) // = ?, h=20
+		        }
+
                         Method (_BCL, 0, NotSerialized)  // _BCL: Brightness Control Levels
                         {
                             Return (BCLB) /* \_SB_.PCI0.GFX0.VGA_.LCD_.BCLB */
@@ -5979,7 +5995,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 Method (CLRI, 0, Serialized)
                 {
                     Local0 = Zero
-		    If (LEqual (^^LPC0.ECOK(), Zero))
+		    If (LEqual (^^LPC0.ZUOK(), One))
                     {
                         If ((^^LPC0.EC0.ADPT == Zero))
                         {
@@ -5995,7 +6011,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                     Return (Local0)
                 }
 
-                Method (ALID, 1, NotSerialized)
+                Method (ALID, 0, NotSerialized)
                 {
 //                    Return (^^^LID._LID ())
                     Return (^^^LID._LID)
@@ -6022,7 +6038,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 Method (ALRD, 1, NotSerialized)
                 {
                     Local0 = Zero
-		    If (LEqual (^^LPC0.ECOK(), Zero))
+		    If (LEqual (^^LPC0.ZUOK(), One))
                     {
                         If (((Arg0 == 0x29) || (Arg0 == 0x2B)))
                         {
@@ -6048,7 +6064,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 Method (ALWR, 2, NotSerialized)
                 {
-		    If (LEqual (^^LPC0.ECOK(), Zero))
+		    If (LEqual (^^LPC0.ZUOK(), One))
                     {
                         If (((Arg0 == 0x29) || (Arg0 == 0x2B)))
                         {
@@ -6088,7 +6104,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                     Acquire (ESMX, 0xFFFF)
                     Local2 = 0x1A
                     Local2 <<= 0x08
-                    If ((LEqual (^^LPC0.ECOK(), Zero) && (^^LPC0.EC0.SMPR == Zero)))
+                    If ((LEqual (^^LPC0.ZUOK(), One) && (^^LPC0.EC0.SMPR == Zero)))
                     {
                         Local0 = 0x04
                         While (Local0)
@@ -6128,7 +6144,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                     Acquire (ESMX, 0xFFFF)
                     Local2 = 0x1A
                     Local2 <<= 0x08
-                    If ((LEqual (^^LPC0.ECOK(), Zero) && (^^LPC0.EC0.SMPR == Zero)))
+                    If ((LEqual (^^LPC0.ZUOK(), One) && (^^LPC0.EC0.SMPR == Zero)))
                     {
                         Local0 = 0x04
                         While (Local0)
@@ -6771,11 +6787,11 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
             INTB (0x1F)
             INTC (0x1F)
             INTD (0x1F)
-            Local1 = PD64 /* \_SB_.PD64 */
-            PIRE = 0x1F
-            PIRF = 0x1F
-            PIRG = 0x1F
-            PIRH = 0x1F
+            Store (PD64, Local1) /* \_SB_.PD64 */
+            Store (0x1F, PIRE) /* \_SB_.PIRE */
+            Store (0x1F, PIRF) /* \_SB_.PIRF */
+            Store (0x1F, PIRG) /* \_SB_.PIRG */
+            Store (0x1F, PIRH) /* \_SB_.PIRH */
         }
 
         Method (INTA, 1, NotSerialized)
@@ -7177,6 +7193,14 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
             Sleep (One)
         }
 
+	// http://h30434.www3.hp.com/t5/Notebook-Hardware-and-Upgrade-Questions/HP-250-G2-Unknown-Device-ACPI-HPQ6001/td-p/5056511
+	// hp wireless button...
+	// hp_wmi is loaded...
+	// 
+	// [    0.744110] ACPI Error: [WLVD] Namespace lookup failure, AE_NOT_FOUND (20160422/psargs-359)
+	// [    0.744123] ACPI Error: Method parse/execution failed [\_SB.WLBU._STA] (Node ffff8803ee8b40c8), AE_NOT_FOUND (20160422/psparse-542)
+	//
+	// WLBU moved to Scope (\_SB)
         Device (WLBU)
         {
             Name (_HID, EisaId ("HPQ6001"))  // _HID: Hardware ID
@@ -7198,8 +7222,9 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                     WLDP = Local0
                 }
 
-                Return (WLDP) /* \_SB_.WLBU.WLDP */
+                Return (WLDP) // \_SB_.WLBU.WLDP
             }
+
         }
 
         Name (LSTA, One)
@@ -7381,21 +7406,21 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
     Mutex (FDAS, 0x00)
     Method (FDDC, 2, Serialized)
     {
-        Name (_T_2, Zero)  // _T_x: Emitted by ASL Compiler
-        Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler
-        Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+        Name (T_2, Zero)  // _T_x: Emitted by ASL Compiler
+        Name (T_1, Zero)  // _T_x: Emitted by ASL Compiler
+        Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
         Acquire (FDAS, 0xFFFF)
         If ((Arg1 == Zero))
         {
             While (One)
             {
-                _T_0 = ToInteger (Arg0)
+                T_0 = ToInteger (Arg0)
                 If ((Match (Package (0x03)
                                 {
                                     0x05, 
                                     0x0F, 
                                     0x18
-                                }, MEQ, _T_0, MTR, Zero, Zero) != Ones))
+                                }, MEQ, T_0, MTR, Zero, Zero) != Ones))
                 {
                     PG1A = One
                 }
@@ -7407,7 +7432,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                                     0x0B, 
                                     0x0C, 
                                     0x12
-                                }, MEQ, _T_0, MTR, Zero, Zero) != Ones))
+                                }, MEQ, T_0, MTR, Zero, Zero) != Ones))
                 {
                     PG2 = One
                 }
@@ -7423,7 +7448,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                                     0x0C, 
                                     0x12, 
                                     0x17
-                                }, MEQ, _T_0, MTR, Zero, Zero) != Ones))
+                                }, MEQ, T_0, MTR, Zero, Zero) != Ones))
                 {
                     SRDY = Zero
                 }
@@ -7433,8 +7458,8 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
             While (One)
             {
-                _T_1 = ToInteger (Arg0)
-                If ((_T_1 == 0x05))
+                T_1 = ToInteger (Arg0)
+                If ((T_1 == 0x05))
                 {
                     I0TD = Zero
                     I0PD = One
@@ -7444,7 +7469,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                         Local0 = I0DS /* \I0DS */
                     }
                 }
-                ElseIf ((_T_1 == 0x06))
+                ElseIf ((T_1 == 0x06))
                 {
                     I1TD = Zero
                     I1PD = One
@@ -7454,7 +7479,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                         Local0 = I1DS /* \I1DS */
                     }
                 }
-                ElseIf ((_T_1 == 0x07))
+                ElseIf ((T_1 == 0x07))
                 {
                     I2TD = Zero
                     I2PD = One
@@ -7464,7 +7489,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                         Local0 = I2DS /* \I2DS */
                     }
                 }
-                ElseIf ((_T_1 == 0x08))
+                ElseIf ((T_1 == 0x08))
                 {
                     I3TD = Zero
                     I3PD = One
@@ -7474,7 +7499,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                         Local0 = I3DS /* \I3DS */
                     }
                 }
-                ElseIf ((_T_1 == 0x0B))
+                ElseIf ((T_1 == 0x0B))
                 {
                     U0TD = Zero
                     U0PD = One
@@ -7484,7 +7509,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                         Local0 = U0DS /* \U0DS */
                     }
                 }
-                ElseIf ((_T_1 == 0x0C))
+                ElseIf ((T_1 == 0x0C))
                 {
                     U1TD = Zero
                     U1PD = One
@@ -7494,11 +7519,11 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                         Local0 = U1DS /* \U1DS */
                     }
                 }
-                ElseIf ((_T_1 == 0x0F))
+                ElseIf ((T_1 == 0x0F))
                 {
                     STD0 ()
                 }
-                ElseIf ((_T_1 == 0x17))
+                ElseIf ((T_1 == 0x17))
                 {
                     U3D0 ()
                 }
@@ -7510,8 +7535,8 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
         {
             While (One)
             {
-                _T_2 = ToInteger (Arg0)
-                If ((_T_2 == 0x05))
+                T_2 = ToInteger (Arg0)
+                If ((T_2 == 0x05))
                 {
                     I0PD = Zero
                     Local0 = I0DS /* \I0DS */
@@ -7522,7 +7547,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     I0TD = 0x03
                 }
-                ElseIf ((_T_2 == 0x06))
+                ElseIf ((T_2 == 0x06))
                 {
                     I1PD = Zero
                     Local0 = I1DS /* \I1DS */
@@ -7533,7 +7558,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     I1TD = 0x03
                 }
-                ElseIf ((_T_2 == 0x07))
+                ElseIf ((T_2 == 0x07))
                 {
                     I2PD = Zero
                     Local0 = I2DS /* \I2DS */
@@ -7544,7 +7569,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     I2TD = 0x03
                 }
-                ElseIf ((_T_2 == 0x08))
+                ElseIf ((T_2 == 0x08))
                 {
                     I3PD = Zero
                     Local0 = I3DS /* \I3DS */
@@ -7555,7 +7580,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     I3TD = 0x03
                 }
-                ElseIf ((_T_2 == 0x0B))
+                ElseIf ((T_2 == 0x0B))
                 {
                     U0PD = Zero
                     Local0 = U0DS /* \U0DS */
@@ -7566,7 +7591,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     U0TD = 0x03
                 }
-                ElseIf ((_T_2 == 0x0C))
+                ElseIf ((T_2 == 0x0C))
                 {
                     U1PD = Zero
                     Local0 = U1DS /* \U1DS */
@@ -7577,11 +7602,11 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     U1TD = 0x03
                 }
-                ElseIf ((_T_2 == 0x0F))
+                ElseIf ((T_2 == 0x0F))
                 {
                     STD3 ()
                 }
-                ElseIf ((_T_2 == 0x17))
+                ElseIf ((T_2 == 0x17))
                 {
                     U3D3 ()
                 }
@@ -9460,10 +9485,23 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
         {
             If (LEqual (^EC0.OKEC, One))
             {
-//                Return (One)
-// Mike Testing, Stable whilst Zero
-// Need to investigate what happens when value is "One"
+		// Mike Dirty Hack1
+		// ECOK is always Zero
+		// All items using ECOK in dsdt now use ZUOK
+		// Something in WMI blobs or hardware, still looks at ECOK
                 Return (Zero)
+            }
+            Else
+            {
+                Return (Zero)
+            }
+        }
+
+        Method (ZUOK, 0, Serialized)
+        {
+            If (LEqual (^EC0.OKEC, One))
+            {
+                Return (One)
             }
             Else
             {
@@ -9475,9 +9513,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
         {
             Name (_HID, EisaId ("PNP0C09") /* Embedded Controller Device */)  // _HID: Hardware ID
             Name (_GPE, 0x03)  // _GPE: General Purpose Events
-// Mike Testing, change default to zero...
-//            Name (OKEC, One)
-            Name (OKEC, Zero)
+            Name (OKEC, One)
             Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
             {
                 IO (Decode16,
@@ -9495,12 +9531,8 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
             })
             Method (_REG, 2, NotSerialized)  // _REG: Region Availability
             {
-//                If ((Arg0 == 0x03))
                 If (LEqual (Arg0, 0x03))
                 {
-//                    OKEC = Arg1
-//                    ECRD = One
-//                    NPST = 0x04
                     Store (Arg1, OKEC) /* \_SB_.PCI0.LPC0.EC0_.OKEC */
                     Store (One, ECRD) /* \_SB_.PCI0.LPC0.EC0_.ECRD */
                     Store (0x04, NPST) /* \_SB_.PCI0.LPC0.EC0_.NPST */
@@ -9884,7 +9916,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 Return (Arg1)
             }
 
-            Method (TUVR, 1, NotSerialized)
+            Method (TUVR, 0, Serialized)
             {
                 Return (0x04)
             }
@@ -9894,7 +9926,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 ATHR (Arg0)
             }
 
-            Method (CLCK, 1, NotSerialized)
+            Method (CLCK, 0, Serialized)
             {
                 Return (Zero)
             }
@@ -10185,13 +10217,14 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 Return (RTVL) /* \_SB_.PCI0.LPC0.EC0_.CMFC.RTVL */
             }
-        }
+
+        } // END Device (EC0)
 
         Scope (EC0)
         {
             Method (BSHK, 0, NotSerialized)
             {
-		If (LEqual (ECOK(), Zero))
+		If (LEqual (ZUOK(), One))
                 {
                     Local1 = One
                     If ((OSYS == 0x07D1))
@@ -10256,7 +10289,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
             Method (_STA, 0, NotSerialized)  // _STA: Status
             {
                 ^^EC0.BSHK ()
-		If (LEqual (ECOK(), Zero))
+		If (LEqual (ZUOK(), One))
                 {
                     If (^^EC0.BOL0)
                     {
@@ -10288,9 +10321,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 Return (BIFX (One))
             }
 
-            //Mike edit
-            //Method (BIFX, 1, Serialized)
-            Method (BIFX, 1, NotSerialized)
+            Method (BIFX, 1, Serialized)
             {
                 Name (STAX, Package (0x14)
                 {
@@ -10331,7 +10362,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                     "LION", 
                     "Hewlett-Packard"
                 })
-		If (LEqual (ECOK(), Zero))
+		If (LEqual (ZUOK(), One))
                 {
                     If ((^^EC0.BAM0 == Zero))
                     {
@@ -10387,7 +10418,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 }
             }
 
-            Method (_BST, 0, NotSerialized)  // _BST: Battery Status
+            Method (_BST, 0, Serialized)  // _BST: Battery Status
             {
                 Name (PBST, Package (0x04)
                 {
@@ -10396,7 +10427,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                     Ones, 
                     0x1770
                 })
-		If (LEqual (ECOK(), Zero))
+		If (LEqual (ZUOK(), One))
                 {
                     PBST [Zero] = ^^EC0.BST0 // \_SB_.PCI0.LPC0.EC0_.BST0 
                     Sleep (Zero)
@@ -10490,6 +10521,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
     Scope (_SB.PCI0.LPC0.EC0)
     {
+
         OperationRegion (DBG1, SystemIO, 0xB0, 0x02)
         Field (DBG1, WordAcc, NoLock, Preserve)
         {
@@ -10599,8 +10631,11 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
             PWRS = Zero
         }
 
+	// [ 2304.449089] ACPI Error: [WLBU] Namespace lookup failure, AE_NOT_FOUND (20160422/psargs-359)
+	// [ 2304.449114] ACPI Error: Method parse/execution failed [\_SB.PCI0.LPC0.EC0._Q40] (Node ffff8803ee8bf758), AE_NOT_FOUND (20160422/psparse-542)
         Method (_Q40, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: _Q40", Debug)
             P80H = 0x40
             If ((((OSYS == 0x07DC) || (OSYS == 0x07DD)) || (OSYS == 0x07DF)))
             {
@@ -10700,6 +10735,11 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                          0x00                                             /* . */
                     })
                 }
+		// Always return something...
+                Return (Buffer (One)
+                {
+                     0x00                                             /* . */
+                })
             }
 
             //Mike edit
@@ -10748,10 +10788,21 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 {
-    Scope (\_SB)
+
+    //External (_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
+    Scope (_SB)
     {
+
         Device (TPM2)
         {
+	    // [    0.000000] ACPI: TPM2 0x00000000DFBC3000 000034 (v03 HPQOEM INSYDE   00000000 HP   00040000)
+	    // [    6.887291] tpm_crb MSFT0101:00: can't request region for resource [mem 0xdfb7a000-0xdfb7dfff]
+	    // [    6.887296] tpm_crb: probe of MSFT0101:00 failed with error -16
+	    //
+	    //  need tpm2-tools not tpm-tools
+	    //  
+	    //
             Name (_HID, "MSFT0101" /* TPM 2.0 Security Device */)  // _HID: Hardware ID
             Name (_CID, "MSFT0101" /* TPM 2.0 Security Device */)  // _CID: Compatible ID
             Name (_STR, Unicode ("TPM 2.0 Device"))  // _STR: Description String
@@ -10828,18 +10879,18 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (HINF, 3, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 While (One)
                 {
-                    _T_0 = ToInteger (Arg1)
-                    If ((_T_0 == Zero))
+                    T_0 = ToInteger (Arg1)
+                    If ((T_0 == Zero))
                     {
                         Return (Buffer (One)
                         {
                              0x03                                             /* . */
                         })
                     }
-                    ElseIf ((_T_0 == One))
+                    ElseIf ((T_0 == One))
                     {
                         Name (TPMV, Package (0x02)
                         {
@@ -10887,38 +10938,38 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
             })
             Method (TPPI, 3, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 While (One)
                 {
-                    _T_0 = ToInteger (Arg1)
-                    If ((_T_0 == Zero))
+                    T_0 = ToInteger (Arg1)
+                    If ((T_0 == Zero))
                     {
                         Return (Buffer (0x02)
                         {
                              0xFF, 0x01                                       /* .. */
                         })
                     }
-                    ElseIf ((_T_0 == One))
+                    ElseIf ((T_0 == One))
                     {
                         Return ("1.2")
                     }
-                    ElseIf ((_T_0 == 0x02))
+                    ElseIf ((T_0 == 0x02))
                     {
                         PPRQ = DerefOf (Arg2 [Zero])
                         PPIP = 0x02
                         IOB2 = PPIN /* \_SB_.TPM2.PPIN */
                         Return (FRET) /* \_SB_.TPM2.FRET */
                     }
-                    ElseIf ((_T_0 == 0x03))
+                    ElseIf ((T_0 == 0x03))
                     {
                         TPM2 [One] = PPRQ /* \_SB_.TPM2.PPRQ */
                         Return (TPM2) /* \_SB_.TPM2.TPM2 */
                     }
-                    ElseIf ((_T_0 == 0x04))
+                    ElseIf ((T_0 == 0x04))
                     {
                         Return (0x02)
                     }
-                    ElseIf ((_T_0 == 0x05))
+                    ElseIf ((T_0 == 0x05))
                     {
                         PPIP = 0x05
                         IOB2 = PPIN /* \_SB_.TPM2.PPIN */
@@ -10926,18 +10977,18 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         TPM3 [0x02] = PPRP /* \_SB_.TPM2.PPRP */
                         Return (TPM3) /* \_SB_.TPM2.TPM3 */
                     }
-                    ElseIf ((_T_0 == 0x06))
+                    ElseIf ((T_0 == 0x06))
                     {
                         Return (0x03)
                     }
-                    ElseIf ((_T_0 == 0x07))
+                    ElseIf ((T_0 == 0x07))
                     {
                         PPIP = 0x07
                         PPRQ = DerefOf (Arg2 [Zero])
                         IOB2 = PPIN /* \_SB_.TPM2.PPIN */
                         Return (FRET) /* \_SB_.TPM2.FRET */
                     }
-                    ElseIf ((_T_0 == 0x08))
+                    ElseIf ((T_0 == 0x08))
                     {
                         PPIP = 0x08
                         PPRQ = DerefOf (Arg2 [Zero])
@@ -10957,18 +11008,18 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (TMCI, 3, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 While (One)
                 {
-                    _T_0 = ToInteger (Arg1)
-                    If ((_T_0 == Zero))
+                    T_0 = ToInteger (Arg1)
+                    If ((T_0 == Zero))
                     {
                         Return (Buffer (One)
                         {
                              0x03                                             /* . */
                         })
                     }
-                    ElseIf ((_T_0 == One))
+                    ElseIf ((T_0 == One))
                     {
                         MORD = DerefOf (Arg2 [Zero])
                         MCIP = One
@@ -10988,18 +11039,18 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (OASM, 3, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 While (One)
                 {
-                    _T_0 = ToInteger (Arg1)
-                    If ((_T_0 == Zero))
+                    T_0 = ToInteger (Arg1)
+                    If ((T_0 == Zero))
                     {
                         Return (Buffer (One)
                         {
                              0x03                                             /* . */
                         })
                     }
-                    ElseIf ((_T_0 == One))
+                    ElseIf ((T_0 == One))
                     {
                         While ((STA1 == One))
                         {
@@ -11075,6 +11126,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
+
+    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
     External (_PR_.C000, DeviceObj)
     External (_PR_.C001, DeviceObj)
     External (_PR_.C002, DeviceObj)
@@ -11856,6 +11910,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
+
+    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
     /*
      * iASL Warning: There were 3 external control methods found during
      * disassembly, but only 0 were resolved (3 unresolved). Additional
@@ -12308,6 +12365,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
+
+    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
     /*
      * iASL Warning: There were 27 external control methods found during
      * disassembly, but only 0 were resolved (27 unresolved). Additional
@@ -12383,7 +12443,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
     External (M233, IntObj)
     External (M235, MethodObj)    // Warning: Unknown method, guessing 2 arguments
 
-    Scope (\_SB.PCI0.VGA)
+    Scope (_SB.PCI0.VGA)
     {
         Name (ATIB, Buffer (0x0100) {})
         Method (ATIF, 2, Serialized)
@@ -12567,7 +12627,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
             Return (ATIB) /* \_SB_.PCI0.VGA_.ATIB */
         }
 
-        Method (AF03, 2, NotSerialized)
+        Method (AF03, 2, Serialized)
         {
             CreateWordField (ATIB, Zero, M157)
             CreateWordField (ATIB, 0x02, M182)
@@ -13126,7 +13186,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
             Return (M189) /* \_SB_.PCI0.VGA_.M189 */
         }
 
-        Method (PX02, 1, NotSerialized)
+        Method (PX02, 1, Serialized)
         {
             CreateWordField (M189, Zero, M157)
             CreateByteField (M189, 0x02, M192)
@@ -13725,6 +13785,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
+
+    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
     /*
      * iASL Warning: There were 2 external control methods found during
      * disassembly, but only 0 were resolved (2 unresolved). Additional
@@ -14020,11 +14083,11 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
     })
     Method (M029, 1, Serialized)
     {
-        Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+        Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
         While (One)
         {
-            _T_0 = M085 /* \M085 */
-            If ((_T_0 == 0x02))
+            T_0 = M085 /* \M085 */
+            If ((T_0 == 0x02))
             {
                 Return (M011 ((M084 + 0x1502), (DerefOf (M037 [Arg0]) * 
                     0x04), Zero, One))
@@ -14035,7 +14098,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
                                 0x04, 
                                 0x05, 
                                 0x06
-                            }, MEQ, _T_0, MTR, Zero, Zero) != Ones))
+                            }, MEQ, T_0, MTR, Zero, Zero) != Ones))
             {
                 Return (M011 ((M084 + 0x1502), (DerefOf (M227 [Arg0]) * 
                     0x04), Zero, One))
@@ -14889,28 +14952,28 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 
     Method (MLIB, 2, Serialized)
     {
-        Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler
-        Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+        Name (T_1, Zero)  // _T_x: Emitted by ASL Compiler
+        Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
         While (One)
         {
-            _T_0 = Arg0
-            If ((_T_0 == Zero))
+            T_0 = Arg0
+            If ((T_0 == Zero))
             {
                 Local0 = DerefOf (Arg1 [0x02])
                 While (One)
                 {
-                    _T_1 = Local0
-                    If ((_T_1 == 0x03))
+                    T_1 = Local0
+                    If ((T_1 == 0x03))
                     {
                         M228 (0x04)
                         M228 (0x05)
                     }
-                    ElseIf ((_T_1 == 0x04))
+                    ElseIf ((T_1 == 0x04))
                     {
                         M228 (0x04)
                         M228 (0x06)
                     }
-                    ElseIf ((_T_1 == 0x03))
+                    ElseIf ((T_1 == 0x03))
                     {
                         M228 (0x04)
                         M228 (0x07)
@@ -14948,6 +15011,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
+
+    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
     /*
      * iASL Warning: There were 14 external control methods found during
      * disassembly, but only 0 were resolved (14 unresolved). Additional
@@ -14993,7 +15059,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 //    External (M128, UnknownObj)
     External (M134, MethodObj)    // Warning: Unknown method, guessing 1 arguments
 
-    Scope (\_SB.PCI0.SATA)
+    Scope (_SB.PCI0.SATA)
     {
         Name (M048, One)
         Method (_DSM, 4, Serialized)  // _DSM: Device-Specific Method
@@ -15970,6 +16036,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
 {
+
+    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
     /*
      * iASL Warning: There was 1 external control method found during
      * disassembly, but only 0 were resolved (1 unresolved). Additional
@@ -15999,7 +16068,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
      */
     External (_SB_.ALIC, MethodObj)    // Warning: Unknown method, guessing 2 arguments
 
-    Scope (\_SB)
+    Scope (_SB)
     {
         Name (AGRB, 0xF8000000)
         Name (ADBG, Buffer (0x0100) {})
@@ -17490,7 +17559,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR0.ABR0.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -17746,7 +17815,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR0.ABR0.A058 */
@@ -18146,7 +18215,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR0.ABR1.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -18402,7 +18471,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR0.ABR1.A058 */
@@ -18802,7 +18871,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR0.ABR2.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -19058,7 +19127,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR0.ABR2.A058 */
@@ -19458,7 +19527,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR0.ABR3.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -19714,7 +19783,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR0.ABR3.A058 */
@@ -20114,7 +20183,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR0.ABR4.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -20370,7 +20439,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR0.ABR4.A058 */
@@ -20777,7 +20846,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR1.ABR5.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -21033,7 +21102,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR1.ABR5.A058 */
@@ -21433,7 +21502,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR1.ABR6.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -21689,7 +21758,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR1.ABR6.A058 */
@@ -22089,7 +22158,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR1.ABR7.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -22345,7 +22414,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR1.ABR7.A058 */
@@ -22745,7 +22814,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR1.ABR8.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -23001,7 +23070,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR1.ABR8.A058 */
@@ -23401,7 +23470,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (AB00) /* \_SB_.AWR1.ABR9.AB00 */
                 }
 
-                Method (A040, 1, NotSerialized)
+                Method (A040, 1, Serialized)
                 {
                     AB02 = Arg0
                     If ((AB03 == 0x01))
@@ -23657,7 +23726,7 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                     Return (A064 (Arg0))
                 }
 
-                Method (A078, 1, NotSerialized)
+                Method (A078, 1, Serialized)
                 {
                     Name (A057, 0x00)
                     A057 = A058 /* \_SB_.AWR1.ABR9.A058 */
@@ -23910,6 +23979,9 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 {
+
+    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
+
     /*
      * iASL Warning: There was 1 external control method found during
      * disassembly, but only 0 were resolved (1 unresolved). Additional
@@ -24008,7 +24080,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
     External (SSMP, MethodObj)    // Warning: Unknown method, guessing 1 arguments
 
     Mutex (MSMT, 0x00)
-    Scope (\_SB)
+    Scope (_SB)
     {
         Name (ETYP, Buffer (One) {})
         Device (\_SB.WMID)
@@ -25407,126 +25479,126 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (RDCF, 2, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 While (One)
                 {
-                    _T_0 = Arg0
-                    If ((_T_0 == 0x04))
+                    T_0 = Arg0
+                    If ((T_0 == 0x04))
                     {
                         RTCC = Zero
                         Return (GDKS ())
                     }
-                    ElseIf ((_T_0 == 0x07))
+                    ElseIf ((T_0 == 0x07))
                     {
                         CreateByteField (Arg1, 0x10, GTDA)
                         RTCC = Zero
                         Return (BATT (GTDA))
                     }
-                    ElseIf ((_T_0 == 0x08))
+                    ElseIf ((T_0 == 0x08))
                     {
                         RTCC = Zero
                         Return (GBBT ())
                     }
-                    ElseIf ((_T_0 == 0x09))
+                    ElseIf ((T_0 == 0x09))
                     {
                         RTCC = Zero
                         Return (GHKS ())
                     }
-                    ElseIf ((_T_0 == 0x0A))
+                    ElseIf ((T_0 == 0x0A))
                     {
-                        If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                        If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                         {
                             RTCC = Zero
                         }
 
                         Return (GHKF ())
                     }
-                    ElseIf ((_T_0 == 0x0C))
+                    ElseIf ((T_0 == 0x0C))
                     {
-                        If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                        If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                         {
                             RTCC = Zero
                         }
 
                         Return (GBBV ())
                     }
-                    ElseIf ((_T_0 == 0x0D))
+                    ElseIf ((T_0 == 0x0D))
                     {
                         RTCC = Zero
                         Return (GFRT ())
                     }
-                    ElseIf ((_T_0 == 0x0F))
+                    ElseIf ((T_0 == 0x0F))
                     {
                         RTCC = Zero
                         Return (GADP ())
                     }
-                    ElseIf ((_T_0 == 0x10))
+                    ElseIf ((T_0 == 0x10))
                     {
                         RTCC = Zero
                         Return (GWSD ())
                     }
-                    ElseIf ((_T_0 == 0x1B))
+                    ElseIf ((T_0 == 0x1B))
                     {
                         RTCC = Zero
                         Return (GWDS ())
                     }
-                    ElseIf ((_T_0 == 0x1D))
+                    ElseIf ((T_0 == 0x1D))
                     {
                         RTCC = Zero
                         Return (GDLC ())
                     }
-                    ElseIf ((_T_0 == 0x1E))
+                    ElseIf ((T_0 == 0x1E))
                     {
                         RTCC = Zero
                         Return (GBUS ())
                     }
-                    ElseIf ((_T_0 == 0x28))
+                    ElseIf ((T_0 == 0x28))
                     {
                         CreateDWordField (Arg1, 0x10, DDWD)
                         RTCC = Zero
                         Return (GTDC (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x29))
+                    ElseIf ((T_0 == 0x29))
                     {
                         RTCC = Zero
                         Return (GFCC ())
                     }
-                    ElseIf ((_T_0 == 0x2A))
+                    ElseIf ((T_0 == 0x2A))
                     {
                         RTCC = Zero
                         Return (GPES ())
                     }
-                    ElseIf ((_T_0 == 0x2B))
+                    ElseIf ((T_0 == 0x2B))
                     {
                         RTCC = Zero
                         Return (GBCO ())
                     }
-                    ElseIf ((_T_0 == 0x2C))
+                    ElseIf ((T_0 == 0x2C))
                     {
                         RTCC = Zero
                         Return (GTCS ())
                     }
-                    ElseIf ((_T_0 == 0x2E))
+                    ElseIf ((T_0 == 0x2E))
                     {
                         RTCC = Zero
                         Return (GHTP ())
                     }
-                    ElseIf ((_T_0 == 0x35))
+                    ElseIf ((T_0 == 0x35))
                     {
                         RTCC = Zero
                         Return (GJVS ())
                     }
-                    ElseIf ((_T_0 == 0x36))
+                    ElseIf ((T_0 == 0x36))
                     {
                         RTCC = Zero
                         Return (GPST ())
                     }
-                    ElseIf ((_T_0 == 0x37))
+                    ElseIf ((T_0 == 0x37))
                     {
                         RTCC = Zero
                         Return (GBCT ())
                     }
-                    ElseIf ((_T_0 == 0x38))
+                    ElseIf ((T_0 == 0x38))
                     {
                         RTCC = Zero
                         Return (GBST ())
@@ -25552,27 +25624,27 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (WRCF, 2, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 CreateDWordField (Arg1, 0x10, DDWD)
                 While (One)
                 {
-                    _T_0 = Arg0
-                    If ((_T_0 == 0x09))
+                    T_0 = Arg0
+                    If ((T_0 == 0x09))
                     {
                         RTCC = Zero
                         Return (SHKS (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x0A))
+                    ElseIf ((T_0 == 0x0A))
                     {
                         RTCC = Zero
                         Return (SHKF (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x0B))
+                    ElseIf ((T_0 == 0x0B))
                     {
                         RTCC = Zero
                         Return (SHKS (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x10))
+                    ElseIf ((T_0 == 0x10))
                     {
                         CreateDWordField (Arg1, 0x10, DAB0)
                         CreateWordField (Arg1, 0x14, DAB1)
@@ -25580,72 +25652,72 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         RTCC = Zero
                         Return (SWSD (DAB0, DAB1, DAB2))
                     }
-                    ElseIf ((_T_0 == 0x1B))
+                    ElseIf ((T_0 == 0x1B))
                     {
                         RTCC = Zero
                         Return (SWDS (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x1D))
+                    ElseIf ((T_0 == 0x1D))
                     {
                         RTCC = Zero
                         Return (SDLC (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x1E))
+                    ElseIf ((T_0 == 0x1E))
                     {
                         RTCC = Zero
                         Return (SBUS (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x1F))
+                    ElseIf ((T_0 == 0x1F))
                     {
                         RTCC = Zero
                         Return (SBCR (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x27))
+                    ElseIf ((T_0 == 0x27))
                     {
                         RTCC = Zero
                         Return (0xFF)
                     }
-                    ElseIf ((_T_0 == 0x28))
+                    ElseIf ((T_0 == 0x28))
                     {
                         RTCC = Zero
                         Return (STDC (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x29))
+                    ElseIf ((T_0 == 0x29))
                     {
                         RTCC = Zero
                         Return (SFCC (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x2A))
+                    ElseIf ((T_0 == 0x2A))
                     {
                         RTCC = Zero
                         Return (SPES (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x2B))
+                    ElseIf ((T_0 == 0x2B))
                     {
                         RTCC = Zero
                         Return (SBCO (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x2C))
+                    ElseIf ((T_0 == 0x2C))
                     {
                         RTCC = Zero
                         Return (STCS (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x35))
+                    ElseIf ((T_0 == 0x35))
                     {
                         RTCC = Zero
                         Return (SJVS (DDWD))
                     }
-                    ElseIf ((_T_0 == 0x36))
+                    ElseIf ((T_0 == 0x36))
                     {
                         RTCC = Zero
                         Return (SPST (Arg1))
                     }
-                    ElseIf ((_T_0 == 0x37))
+                    ElseIf ((T_0 == 0x37))
                     {
                         RTCC = Zero
                         Return (SBCT (Arg1))
                     }
-                    ElseIf ((_T_0 == 0x38))
+                    ElseIf ((T_0 == 0x38))
                     {
                         RTCC = Zero
                         Return (SBST (Arg1))
@@ -25691,7 +25763,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
             }
 
             Mutex (BTMX, 0x00)
-            Method (BATT, 1, NotSerialized)
+            Method (BATT, 1, Serialized)
             {
                 Debug = "Get Battery Information-----"
                 If ((Arg0 != Zero))
@@ -25702,7 +25774,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                             Zero
                         }
                 }
-                ElseIf (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                ElseIf (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
                     If ((\_SB.PCI0.LPC0.EC0.BOL0 == Zero))
                     {
@@ -25954,7 +26026,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         0x04, 
                         Buffer (0x04) {}
                     }
-                If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
                     DerefOf (Local0 [0x02]) [Zero] = \_SB.PCI0.LPC0.EC0.WMIM /* External reference */
                 }
@@ -25964,7 +26036,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (SHKS, 1, Serialized)
             {
-                If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
                     \_SB.PCI0.LPC0.EC0.WMIM = Arg0
                 }
@@ -25984,7 +26056,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         0x04, 
                         Buffer (0x04) {}
                     }
-                If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
                     Local1 = \_SB.PCI0.LPC0.EC0.REC1 /* External reference */
                     \_SB.PCI0.LPC0.EC0.REC1 = Zero
@@ -26021,7 +26093,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
             {
                 Local0 = (Local0 = Arg0 & 0xFF)
                 Local1 = ((Local1 = (Local1 = Arg0 >> 0x08)) & 0xFF)
-                If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
                     \_SB.PCI0.LPC0.EC0.WEC1 = Local0
                     \_SB.PCI0.LPC0.EC0.WEC2 = Local1
@@ -26084,7 +26156,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         Buffer (0x04) {}
                     }
                 DerefOf (Local0 [0x02]) [Zero] = One
-                If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
                     Local1 = \_SB.PCI0.LPC0.EC0.SADP /* External reference */
                     Local1 &= 0xF0
@@ -26310,51 +26382,51 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (SWDS, 1, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 WMIE = One
-                Local0 = Zero
-                Local1 = Zero
-                Local2 = Zero
-                Local3 = Zero
+                //Local0 = Zero
+                //Local1 = Zero
+                //Local2 = Zero
+                //Local3 = Zero
                 WMIR = One
                 While (One)
                 {
-                    _T_0 = (Arg0 & Ones)
-                    If ((_T_0 == 0x01000001))
+                    T_0 = (Arg0 & Ones)
+                    If ((T_0 == 0x01000001))
                     {
                         GP15 = One
                         WLAN = One
                     }
-                    ElseIf ((_T_0 == One))
+                    ElseIf ((T_0 == One))
                     {
                         GP15 = Zero
                         WLAN = Zero
                     }
-                    ElseIf ((_T_0 == 0x01010001))
+                    ElseIf ((T_0 == 0x01010001))
                     {
                         GP68 = One
                         BLTH = One
                     }
-                    ElseIf ((_T_0 == 0x00010001))
+                    ElseIf ((T_0 == 0x00010001))
                     {
                         GP68 = Zero
                         BLTH = Zero
                     }
-                    ElseIf ((_T_0 == 0x01FE0001))
+                    ElseIf ((T_0 == 0x01FE0001))
                     {
                         GP15 = One
                         WLAN = One
                         GP68 = One
                         BLTH = One
                     }
-                    ElseIf ((_T_0 == 0x00FE0001))
+                    ElseIf ((T_0 == 0x00FE0001))
                     {
                         GP15 = Zero
                         WLAN = Zero
                         GP68 = Zero
                         BLTH = Zero
                     }
-                    ElseIf ((_T_0 == 0x01FF0001))
+                    ElseIf ((T_0 == 0x01FF0001))
                     {
                         GP68 = One
                         GP15 = One
@@ -26362,7 +26434,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         BLTH = One
                         BTLS = One
                     }
-                    ElseIf ((_T_0 == 0x00FF0001))
+                    ElseIf ((T_0 == 0x00FF0001))
                     {
                         GP68 = Zero
                         GP15 = Zero
@@ -26370,7 +26442,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         BLTH = Zero
                         BTLS = Zero
                     }
-                    ElseIf ((_T_0 == 0x01FF0000))
+                    ElseIf ((T_0 == 0x01FF0000))
                     {
                         GP68 = One
                         GP15 = One
@@ -26478,7 +26550,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (GBCR, 0, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 Name (GBAC, Buffer (0x04)
                 {
                      0x00, 0x00, 0x00, 0x00                           /* .... */
@@ -26502,16 +26574,16 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                     GBL0 &= 0x03 /* \_SB_.WMID.GBCR.GBL0 */
                     While (One)
                     {
-                        _T_0 = GBL0 /* \_SB_.WMID.GBCR.GBL0 */
-                        If ((_T_0 == Zero))
+                        T_0 = GBL0 /* \_SB_.WMID.GBCR.GBL0 */
+                        If ((T_0 == Zero))
                         {
                             GBL0 = Zero
                         }
-                        ElseIf ((_T_0 == One))
+                        ElseIf ((T_0 == One))
                         {
                             GBL0 = 0x02
                         }
-                        ElseIf ((_T_0 == 0x02))
+                        ElseIf ((T_0 == 0x02))
                         {
                             GBL0 = One
                         }
@@ -26532,19 +26604,19 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (SBCR, 1, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 While (One)
                 {
-                    _T_0 = (Arg0 & 0x0302)
-                    If ((_T_0 == Zero))
+                    T_0 = (Arg0 & 0x0302)
+                    If ((T_0 == Zero))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = Zero
                     }
-                    ElseIf ((_T_0 == 0x0100))
+                    ElseIf ((T_0 == 0x0100))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = Zero
                     }
-                    ElseIf ((_T_0 == 0x0200))
+                    ElseIf ((T_0 == 0x0200))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = One
                     }
@@ -26912,7 +26984,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (GBCO, 0, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 Name (GBAC, Buffer (0x04)
                 {
                      0x00, 0x00, 0x00, 0x00                           /* .... */
@@ -26938,24 +27010,24 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         GBL0 &= 0x07 /* \_SB_.WMID.GBCO.GBL0 */
                         While (One)
                         {
-                            _T_0 = GBL0 /* \_SB_.WMID.GBCO.GBL0 */
-                            If ((_T_0 == Zero))
+                            T_0 = GBL0 /* \_SB_.WMID.GBCO.GBL0 */
+                            If ((T_0 == Zero))
                             {
                                 GBL0 = Zero
                             }
-                            ElseIf ((_T_0 == One))
+                            ElseIf ((T_0 == One))
                             {
                                 GBL0 = 0x02
                             }
-                            ElseIf ((_T_0 == 0x02))
+                            ElseIf ((T_0 == 0x02))
                             {
                                 GBL0 = One
                             }
-                            ElseIf ((_T_0 == 0x03))
+                            ElseIf ((T_0 == 0x03))
                             {
                                 GBL0 = Zero
                             }
-                            ElseIf ((_T_0 == 0x04))
+                            ElseIf ((T_0 == 0x04))
                             {
                                 GBL0 = Zero
                             }
@@ -26999,45 +27071,45 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (SBCO, 1, Serialized)
             {
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 While (One)
                 {
-                    _T_0 = (Arg0 & 0x0702)
-                    If ((_T_0 == Zero))
+                    T_0 = (Arg0 & 0x0702)
+                    If ((T_0 == Zero))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = Zero
                         \_SB.PCI0.LPC0.EC0.SBIS = Zero
                         \_SB.PCI0.LPC0.EC0.SBTC = Zero
                         \_SB.PCI0.LPC0.EC0.BTNO = Zero
                     }
-                    ElseIf ((_T_0 == 0x0100))
+                    ElseIf ((T_0 == 0x0100))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = Zero
                         \_SB.PCI0.LPC0.EC0.SBIS = Zero
                         \_SB.PCI0.LPC0.EC0.SBTC = Zero
                         \_SB.PCI0.LPC0.EC0.BTNO = One
                     }
-                    ElseIf ((_T_0 == 0x0200))
+                    ElseIf ((T_0 == 0x0200))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = One
                         \_SB.PCI0.LPC0.EC0.SBIS = Zero
                         \_SB.PCI0.LPC0.EC0.SBTC = Zero
                         \_SB.PCI0.LPC0.EC0.BTNO = One
                     }
-                    ElseIf ((_T_0 == 0x0300))
+                    ElseIf ((T_0 == 0x0300))
                     {
                         \_SB.PCI0.LPC0.EC0.SBTC = One
                         \_SB.PCI0.LPC0.EC0.SBIS = Zero
                         \_SB.PCI0.LPC0.EC0.BTNO = One
                     }
-                    ElseIf ((_T_0 == 0x0400))
+                    ElseIf ((T_0 == 0x0400))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = Zero
                         \_SB.PCI0.LPC0.EC0.SBIS = Zero
                         \_SB.PCI0.LPC0.EC0.SBTC = Zero
                         \_SB.PCI0.LPC0.EC0.BTNO = Zero
                     }
-                    ElseIf ((_T_0 == 0x0500))
+                    ElseIf ((T_0 == 0x0500))
                     {
                         \_SB.PCI0.LPC0.EC0.WACL = Zero
                         \_SB.PCI0.LPC0.EC0.SBIS = One
@@ -27389,7 +27461,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (ESDT, 0, NotSerialized)
             {
-                If (LEqual (\_SB.PCI0.LPC0.ECOK(), Zero))
+                If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
                     Local0 = \_SB.RTC.RTCW /* External reference */
                     If (Local0)
@@ -27408,33 +27480,33 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 
             Method (WHCM, 2, Serialized)
             {
-                Name (_T_2, Zero)  // _T_x: Emitted by ASL Compiler
-                Name (_T_1, Zero)  // _T_x: Emitted by ASL Compiler
-                Name (_T_0, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_2, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_1, Zero)  // _T_x: Emitted by ASL Compiler
+                Name (T_0, Zero)  // _T_x: Emitted by ASL Compiler
                 CreateDWordField (Arg1, Zero, SNIN)
                 CreateDWordField (Arg1, 0x04, COMD)
                 CreateDWordField (Arg1, 0x08, CMTP)
                 CreateDWordField (Arg1, 0x0C, DASI)
                 While (One)
                 {
-                    _T_0 = Arg0
-                    If ((_T_0 == One))
+                    T_0 = Arg0
+                    If ((T_0 == One))
                     {
                         Local0 = Zero
                     }
-                    ElseIf ((_T_0 == 0x02))
+                    ElseIf ((T_0 == 0x02))
                     {
                         Local0 = 0x04
                     }
-                    ElseIf ((_T_0 == 0x03))
+                    ElseIf ((T_0 == 0x03))
                     {
                         Local0 = 0x80
                     }
-                    ElseIf ((_T_0 == 0x04))
+                    ElseIf ((T_0 == 0x04))
                     {
                         Local0 = 0x0400
                     }
-                    ElseIf ((_T_0 == 0x05))
+                    ElseIf ((T_0 == 0x05))
                     {
                         Local0 = 0x1000
                     }
@@ -27465,8 +27537,8 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                     Sleep (0x32)
                     While (One)
                     {
-                        _T_1 = COMD /* \_SB_.WMID.WHCM.COMD */
-                        If ((_T_1 == One))
+                        T_1 = COMD /* \_SB_.WMID.WHCM.COMD */
+                        If ((T_1 == One))
                         {
                             If (((CMTP > Zero) && (CMTP <= 0x3A)))
                             {
@@ -27481,7 +27553,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                                 }
                             }
                         }
-                        ElseIf ((_T_1 == 0x02))
+                        ElseIf ((T_1 == 0x02))
                         {
                             If (((CMTP > Zero) && (CMTP <= 0x3A)))
                             {
@@ -27496,27 +27568,27 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                                 }
                             }
                         }
-                        ElseIf ((_T_1 == 0x00020002))
+                        ElseIf ((T_1 == 0x00020002))
                         {
                             While (One)
                             {
-                                _T_2 = CMTP /* \_SB_.WMID.WHCM.CMTP */
-                                If ((_T_2 == One))
+                                T_2 = CMTP /* \_SB_.WMID.WHCM.CMTP */
+                                If ((T_2 == One))
                                 {
                                     Local2 = CSTA ()
                                     RTCD = Zero
                                 }
-                                ElseIf ((_T_2 == 0x02))
+                                ElseIf ((T_2 == 0x02))
                                 {
                                     Local2 = CACT (DAIN)
                                     RTCD = Zero
                                 }
-                                ElseIf ((_T_2 == 0x03))
+                                ElseIf ((T_2 == 0x03))
                                 {
                                     Local2 = CDAC (DAIN)
                                     RTCD = Zero
                                 }
-                                ElseIf ((_T_2 == 0x06))
+                                ElseIf ((T_2 == 0x06))
                                 {
                                     CreateField (Arg1, 0x80, (Local5 * 0x08), DANH)
                                     Local2 = CAIP (DANH)
@@ -27609,7 +27681,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
             Name (BF3C, "   ")
             Name (BF2S, "                                                                                             ")
             Name (BSTR, "                                                                                             ")
-            Method (STCP, 3, NotSerialized)
+            Method (STCP, 3, Serialized)
             {
                 Name (ST01, Buffer (0x80) {})
                 Name (ST02, Buffer (0x80) {})
@@ -27637,13 +27709,14 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                 Return (Zero)
             }
 
-            Method (WMBA, 3, NotSerialized)
+            Method (WMBA, 3, Serialized)
             {
                 Name (DBUF, Buffer (0x0200) {})
                 If ((Arg1 == One))
                 {
+                    Local0 = Arg0 // Junk Line
                     Local0 = Arg2
-                    Local1 = SizeOf (Local0)
+                    //Local1 = SizeOf (Local0)
                     Local4 = DerefOf (Local0 [Zero])
                     Local2 = 0x02
                     Local3 = Zero
@@ -27741,7 +27814,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                 Return (One)
             }
 
-            Method (WQBC, 1, NotSerialized)
+            Method (WQBC, 1, Serialized)
             {
                 Local0 = Arg0
                 HWBF = Local0
@@ -27890,7 +27963,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                 })
             }
 
-            Method (WQBD, 1, NotSerialized)
+            Method (WQBD, 1, Serialized)
             {
                 Local0 = Arg0
                 EHWB = Local0
@@ -27984,7 +28057,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                 }
             }
 
-            Method (WQBE, 1, NotSerialized)
+            Method (WQBE, 1, Serialized)
             {
                 EHWB = Zero
                 Local0 = Arg0
@@ -28108,7 +28181,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                 Return (HWRC) /* \_SB_.WMID.HWRC */
             }
 
-            Method (WQBF, 1, NotSerialized)
+            Method (WQBF, 1, Serialized)
             {
                 Local0 = Arg0
                 If ((Local0 == Zero))
@@ -28153,6 +28226,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         Name (STRB, "                                                                      ")
                         PWDP [0x0E] = PSET /* \_SB_.WMID.WQBF.PSET */
                         PWDP [0x06] = Arg0
+			STRB = BF2S /* \_SB_.WMID.WQBC.BF2S */
                         Return (PWDP) /* \_SB_.WMID.WQBF.PWDP */
                     }
                     Else
