@@ -584,10 +584,14 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 If (_OSI ("Linux"))
                 {
 		    Store("Debug: Linux", Debug)
-                    LINX = One
-                    OSTB = 0x80
-                    TPOS = 0x80
-                    OSYS = 0x03E8
+                    //LINX = One
+                    //OSTB = 0x80
+                    //TPOS = 0x80
+                    //OSYS = 0x03E8
+                    OSSP = One
+                    OSTB = 0x70
+                    TPOS = 0x70
+                    OSYS = 0x07DF
                 }
             }
             ElseIf (CondRefOf (\_OS, Local0))
@@ -1032,6 +1036,8 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
         CTHL,   4, 
             ,   1, 
         LIDF,   1, 
+        BRIU,   1, 
+        BRID,   1, 
         PMEE,   1, 
         PWBE,   1, 
         RNGE,   1, 
@@ -2312,6 +2318,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 Device (LCD)
                 {
+		    Store("Debug: _SB.PCI0.VGA.LCD", Debug)
                     Name (_ADR, 0x0110)  // _ADR: Address
                     Name (BCLB, Package (0x34)
                     {
@@ -2688,7 +2695,11 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
 		    Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current
 		    {
+			//////////////////////////////////////////////////
+			// Brightness Query Current level
+			//////////////////////////////////////////////////
 		        //Return (0x1E) // = 50, h=30
+			Store("Debug: _SB.PCI0.VGA.LCD._BQC", Debug)
 		        Return (0x26) // = ?, h=20
 		    }
 
@@ -2699,90 +2710,116 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                     Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
                     {
+			//Store("Debug: _SB.PCI0.VGA.LCD._BCM", Debug)
                         BRTL = Arg0
+			//Store("Debug: BRTL", Debug)
+			Store(BRTL, Debug)
                         Divide (Arg0, 0x0A, Local0, Local1)
+			//Store("Debug: IDPC", Debug)
+			Store(IDPC, Debug)
                         If ((IDPC == 0x0614))
                         {
+			    //Store("Debug: IDPC: 1", Debug)
                             Local2 = DerefOf (UBBL [Zero])
                         }
                         ElseIf ((IDPC == 0x4C51))
                         {
+			    //Store("Debug: IDPC: 2", Debug)
                             Local2 = DerefOf (UBBL [One])
                         }
                         ElseIf ((IDPC == 0x46EC))
                         {
+			    //Store("Debug: IDPC: 3", Debug)
                             Local2 = DerefOf (UBBL [0x02])
                         }
                         ElseIf ((IDPC == 0x15C9))
                         {
+			    //Store("Debug: IDPC: 4", Debug)
                             Local2 = DerefOf (UBBL [0x03])
                         }
                         ElseIf ((IDPC == 0x15BE))
                         {
+			    //Store("Debug: IDPC: 5", Debug)
                             Local2 = DerefOf (UBBL [0x04])
                         }
                         ElseIf ((IDPC == 0x0465))
                         {
+			    //Store("Debug: IDPC: 6", Debug)
                             Local2 = DerefOf (UBBL [0x05])
                         }
                         ElseIf ((IDPC == 0x063B))
                         {
+			    //Store("Debug: IDPC: 7", Debug)
                             Local2 = DerefOf (UBBL [0x06])
                         }
                         ElseIf ((IDPC == 0x4E51))
                         {
+			    //Store("Debug: IDPC: 8", Debug)
                             Local2 = DerefOf (UBBL [0x07])
                         }
                         ElseIf ((IDPC == 0x45EC))
                         {
+			    //Store("Debug: IDPC: 9", Debug)
                             Local2 = DerefOf (UBBL [0x08])
                         }
                         ElseIf ((IDPC == 0x15CA))
                         {
+			    //Store("Debug: IDPC: 10", Debug)
                             Local2 = DerefOf (UBBL [0x09])
                         }
                         ElseIf ((IDPC == 0x15BF))
                         {
+			    //Store("Debug: IDPC: 11", Debug)
                             Local2 = DerefOf (UBBL [0x0A])
                         }
                         ElseIf ((IDPC == 0x0493))
                         {
+			    //Store("Debug: IDPC: 12", Debug)
                             Local2 = DerefOf (UBBL [0x0B])
                         }
                         ElseIf ((IDPC == 0x0468))
                         {
+			    //Store("Debug: IDPC: 13", Debug)
                             Local2 = DerefOf (UBBL [0x0C])
                         }
                         ElseIf ((IDPC == 0x044F))
                         {
+			    //Store("Debug: IDPC: 14", Debug)
                             Local2 = DerefOf (UBBL [0x0D])
                         }
                         ElseIf ((IDPC == 0x04B3))
                         {
+			    //Store("Debug: IDPC: 15", Debug)
                             Local2 = DerefOf (UBBL [0x0E])
                         }
                         ElseIf ((IDPC == 0x5444))
                         {
+			    //Store("Debug: IDPC: 16", Debug)
                             Local2 = DerefOf (UBBL [0x0F])
                         }
                         ElseIf ((IDPC == 0x36ED))
                         {
+			    //Store("Debug: IDPC: 17", Debug)
                             Local2 = DerefOf (UBBL [0x10])
                         }
                         ElseIf ((IDPC == 0x38ED))
                         {
+			    //Store("Debug: IDPC: 18", Debug)
                             Local2 = DerefOf (UBBL [0x11])
                         }
                         ElseIf ((IDPC == 0x0687))
                         {
+			    //Store("Debug: IDPC: 19", Debug)
                             Local2 = DerefOf (UBBL [0x12])
                         }
                         ElseIf ((IDPC == 0x0519))
                         {
+			    //Store("Debug: IDPC: 20", Debug)
                             Local2 = DerefOf (UBBL [0x13])
                         }
                         ElseIf ((IDPC == 0x3249))
                         {
+			    //Store("Debug: IDPC: 21", Debug)
                             Local2 = DerefOf (UBBL [0x14])
                         }
                         Else
@@ -2804,8 +2841,11 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                         }
 
                         Local0 = DerefOf (Local2 [Local1])
+			//Store("Debug: AF7E", Debug)
+			//Store(AF7E, Debug)
                         If ((AF7E == 0x80000001))
                         {
+			    //Store("Debug: AF7E YES", Debug)
                             Divide ((Arg0 * 0xFF), 0x64, Local1, Local0)
                             AFN7 (Local0)
                             BRTL = Arg0
@@ -2817,6 +2857,12 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                             BCMD = 0x72
                             BSMI (Zero)
                             Release (^^^LPC0.PSMX)
+
+			    //Store("Debug: BRTL", Debug)
+			    //Store(BRTL, Debug)
+
+			    //Store("Debug: BCMD", Debug)
+			    //Store(BCMD, Debug)
                         }
                     }
                 }
@@ -4096,7 +4142,9 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                         Method (_BCM, 1, NotSerialized)  // _BCM: Brightness Control Method
                         {
-                            BRTL = Arg0
+			    Store("Debug: _SB.PCI0.GFX0.VGA.LCD._BCM", Debug)
+                            //BRTL = Arg0
+			    Store (Arg0, BRTL)
                             Divide (Arg0, 0x0A, Local0, Local1)
                             If ((IDPC == 0x0614))
                             {
@@ -7238,8 +7286,60 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
             Method (_LID, 0, NotSerialized)  // _LID: Lid Status
             {
-//                Local0 = ^^PCI0.LPC0.EC0.LIDF /* \_SB_.PCI0.LPC0.EC0_.LIDF */
-		Local0 = Zero
+                //Local0 = ^^PCI0.LPC0.EC0.LIDF /* \_SB_.PCI0.LPC0.EC0_.LIDF */
+		//Local0 = Zero
+		// current scope == Scope (_SB)
+                //Local0 = ^PCI0.LPC0.EC0.LIDF /* \_SB_.PCI0.LPC0.EC0_.LIDF */
+                Local0 = LIDF /* \_SB_.PCI0.LPC0.EC0_.LIDF */
+                If (Local0)
+                {
+                    Return (Zero)
+                }
+
+                Return (One)
+            }
+        }
+
+        Device (BBU)
+        {
+	    //ACPI generic button = ACPI0011
+	    // PNP0C09 = Embeded Controller Device // A host embedded controller controlled through an ACPI-aware driver.
+	    // ACPI0001 = SMBus controller
+
+	    // PNP0C0C = Power Button
+	    // PNP0C0D = Lid Button
+	    // PNP0C0E = Sleep Button
+	    // PNP0A03 = Host Bridge Event (PME)
+            Name (_HID, EisaId ("PNP0C0C") /* Generic Button */)  // _HID: Hardware ID
+            Method (_STA, 0, NotSerialized)  // _STA: Status
+            {
+                Return (0x0F)
+            }
+
+            Method (_BBU, 0, NotSerialized)  // _BBU: Brightness Up Status
+            {
+                Local0 = ^^PCI0.LPC0.EC0.BRIU /* \_SB_.PCI0.LPC0.EC0_.BRIU */
+                If (Local0)
+                {
+                    Return (Zero)
+                }
+
+                Return (One)
+            }
+        }
+
+        Device (BBD)
+        {
+	    //ACPI generic button = ACPI0011
+            Name (_HID, EisaId ("PNP0C0C") /* Generic Button */)  // _HID: Hardware ID
+            Method (_STA, 0, NotSerialized)  // _STA: Status
+            {
+                Return (0x0F)
+            }
+
+            Method (_BBD, 0, NotSerialized)  // _BBD: Brightness Down Staus
+            {
+                Local0 = ^^PCI0.LPC0.EC0.BRID /* \_SB_.PCI0.LPC0.EC0_.BRID */
                 If (Local0)
                 {
                     Return (Zero)
@@ -9624,6 +9724,8 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                 CTHL,   4, 
                     ,   1, 
                 LIDF,   1, 
+                BRIU,   1, 
+                BRID,   1, 
                 PMEE,   1, 
                 PWBE,   1, 
                 RNGE,   1, 
@@ -10531,18 +10633,56 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q11, 0, NotSerialized)  // _Qxx: EC Query
         {
-            P80H = 0x11
-            Notify (^^^VGA.LCD, 0x87) // Device-Specific
+	    //////////////////////////////////////////////////
+	    // Brightness Down
+	    //////////////////////////////////////////////////
+	    Store("Debug: =====QUERY_11===== call...", Debug)
+
+	    // B.5.3 _BCM (Set the Brightness Level)
+	    // This method allows OSPM to set the brightness level of a built-in display output device.
+	    // The OS will only set levels that were reported via the _BCL method. This method is required if
+	    // _BCL is implemented.
+	    // Arguments: (1)
+	    // Arg0 – An Integer containing the new brightness level
+	    // Return Value:
+	    // None
+	    // 
+	    // Example:
+	    // Method (_BCM, 1) { // Set the requested level }
+	    // The method will be called in response to a power source change or at the specific request of the end
+	    // user, for example, when the user presses a function key that represents brightness control.
+
+	    //^^^VGA.LCD._BCM(0x10)
+	    //^^^GFX0.VGA.LCD._BCM(0x10)
+
+            //P80H = 0x11
+	    //Store(0x11, P80H)
+	    //Store("Debug: =====QUERY_11: p80h updated...", Debug)
+
+            //Notify (^^^LPC0.KBC0, 0x20) // _SB.PCI0.LPC0.KBC0
+	    //Store("Debug: =====QUERY_11: KBC0 notified...", Debug)
+
+            Notify (^^^VGA.LCD, 0x87) // Device-Specific // _SB.PCI0.VGA.LCD
+	    Store("Debug: =====QUERY_11: VGA.LCD notified...", Debug)
+
+            //Notify (^^^GFX0.VGA.LCD, 0x87) // Device-Specific // _SB.PCI0.GFX0.VGA.LCD	    
+	    //Store("Debug: =====QUERY_11: GFX0.VGA.LCD notified...", Debug)
         }
 
         Method (_Q12, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    //////////////////////////////////////////////////
+	    // Brightness Up
+	    //////////////////////////////////////////////////
+	    Store("Debug: =====QUERY_12===== call...", Debug)
             P80H = 0x12
             Notify (^^^VGA.LCD, 0x86) // Device-Specific
+	    Notify (^^^LPC0.KBC0, 0x10)
         }
 
         Method (_Q13, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_13===== call...", Debug)
             P80H = 0x13
             If (ECON)
             {
@@ -10553,6 +10693,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q14, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_14===== call...", Debug)
             P80H = 0x14
             If (ECON)
             {
@@ -10567,6 +10708,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q15, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_15===== call...", Debug)
             P80H = 0x15
             If (IGDS)
             {
@@ -10576,6 +10718,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q1D, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_1D===== call...", Debug)
             P80H = 0x1D
             Local0 = PCVL /* \_SB_.PCI0.LPC0.EC0_.PCVL */
             \_PR.C000.PPCV = Local0
@@ -10584,8 +10727,9 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q25, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_25===== call...", Debug)
             P80H = 0x25
-            Debug = "=====QUERY_25====="
+            //Debug = "=====QUERY_25====="
             Sleep (0x03E8)
             Notify (BAT1, 0x81) // Information Change
             Sleep (0x03E8)
@@ -10594,6 +10738,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q26, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_26===== call...", Debug)
             P80H = 0x26
             Local0 = (CPBC & 0x80)
             If ((Local0 == 0x80))
@@ -10610,8 +10755,9 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q37, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_37===== call...", Debug)
             P80H = 0x37
-            Debug = "=====QUERY_37====="
+            //Debug = "=====QUERY_37====="
             Notify (ACAD, 0x80) // Status Change
             Sleep (0x03E8)
             Notify (BAT1, 0x80) // Status Change
@@ -10623,8 +10769,9 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q38, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_38===== call...", Debug)
             P80H = 0x38
-            Debug = "=====QUERY_38====="
+            //Debug = "=====QUERY_38====="
             Notify (ACAD, 0x80) // Status Change
             Sleep (0x03E8)
             Notify (BAT1, 0x80) // Status Change
@@ -10635,7 +10782,8 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 	// [ 2304.449114] ACPI Error: Method parse/execution failed [\_SB.PCI0.LPC0.EC0._Q40] (Node ffff8803ee8bf758), AE_NOT_FOUND (20160422/psparse-542)
         Method (_Q40, 0, NotSerialized)  // _Qxx: EC Query
         {
-	    Store("Debug: _Q40", Debug)
+	    // Flight mode button, on/off
+	    //Store("Debug: =====QUERY_40===== call...", Debug)
             P80H = 0x40
             If ((((OSYS == 0x07DC) || (OSYS == 0x07DD)) || (OSYS == 0x07DF)))
             {
@@ -10648,12 +10796,14 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q42, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_42===== call...", Debug)
             P80H = 0x42
             ^^^^WMID.ESDT ()
         }
 
         Method (_Q44, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_44===== call...", Debug)
             P80H = 0x44
             If (ECON)
             {
@@ -10665,6 +10815,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
         Method (_Q45, 0, NotSerialized)  // _Qxx: EC Query
         {
+	    Store("Debug: =====QUERY_45===== call...", Debug)
             P80H = 0x45
             Debug = "=====QUERY_45====="
             If (ECON)
@@ -14878,7 +15029,8 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 
                 If (\_OSI ("Linux"))
                 {
-                    M046 = 0x02
+                    //M046 = 0x02
+                    M046 = One
                 }
             }
         }
@@ -23834,6 +23986,9 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
                             A051 (0x01)
                             If (CondRefOf (\_SB.ALIC, Local6))
                             {
+				//Get rid of compiler warning
+				And(Local6, Ones, Local6)
+
                                 Local1 = ((AB0C << 0x03) | AB0D) /* \_SB_.AWR1.ABR9.AB0D */
                                 \_SB.ALIC (Local1, 0x00)
                                 Sleep (0x02)
