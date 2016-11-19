@@ -2698,9 +2698,8 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 			//////////////////////////////////////////////////
 			// Brightness Query Current level
 			//////////////////////////////////////////////////
-		        //Return (0x1E) // = 50, h=30
 			Store("Debug: _SB.PCI0.VGA.LCD._BQC", Debug)
-		        Return (0x26) // = ?, h=20
+		        Return (0x14) // = 20%, v=9/49, actual=51/255
 		    }
 
                     Method (_BCL, 0, NotSerialized)  // _BCL: Brightness Control Levels
@@ -4131,8 +4130,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
 		        Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current
 		        {
-		            //Return (0x1E) // = 50, h=30
-		            Return (0x26) // = ?, h=20
+		            Return (0x14) // = 20%, v=9/49, actual=51/255
 		        }
 
                         Method (_BCL, 0, NotSerialized)  // _BCL: Brightness Control Levels
@@ -7249,6 +7247,17 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 	// [    0.744123] ACPI Error: Method parse/execution failed [\_SB.WLBU._STA] (Node ffff8803ee8b40c8), AE_NOT_FOUND (20160422/psparse-542)
 	//
 	// WLBU moved to Scope (\_SB)
+	//
+	// ssdt1.aml
+	//    Scope (_SB)
+	//    {
+	//        Device (\_SB.WMID)
+	//        {
+	//            OperationRegion (HNVS, SystemMemory, 0xDFB5E000, 0x000012E8)
+	//            Field (HNVS, AnyAcc, NoLock, Preserve)
+	//            {
+	//                WLVD,   16, 
+	//
         Device (WLBU)
         {
             Name (_HID, EisaId ("HPQ6001"))  // _HID: Hardware ID
@@ -7261,7 +7270,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
                     OSTP ()
                     If ((((OSYS == 0x07DC) || (OSYS == 0x07DD)) || (OSYS == 0x07DF)))
                     {
-                        If (((WLVD != Zero) && (WLVD != 0xFFFF)))
+                        If (((\_SB.WMID.WLVD != Zero) && (\_SB.WMID.WLVD != 0xFFFF)))
                         {
                             Local0 = 0x0F
                         }
@@ -24134,9 +24143,6 @@ DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
 {
-
-    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
-
     /*
      * iASL Warning: There was 1 external control method found during
      * disassembly, but only 0 were resolved (1 unresolved). Additional
@@ -27618,7 +27624,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
             {
                 If (LEqual (\_SB.PCI0.LPC0.ZUOK(), One))
                 {
-                    Local0 = \_SB.RTC.RTCW /* External reference */
+                    Local0 = \_SB.PCI0.LPC0.RTC.RTCW /* External reference */
                     If (Local0)
                     {
                         Local0--
@@ -27629,7 +27635,8 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00001000)
                         \_SB.PCI0.LPC0.EC0.PRDT = 0x40
                     }
 
-                    \_SB.PCI0.LPC0.EC0.PRTM = ECMT (FromBCD (\_SB.RTC.RTCH), FromBCD (\_SB.RTC.RTCM))
+//                    \_SB.PCI0.LPC0.EC0.PRTM = ECMT (FromBCD (\_SB.RTC.RTCH), FromBCD (\_SB.RTC.RTCM))
+                    \_SB.PCI0.LPC0.EC0.PRTM = ECMT (FromBCD (\_SB.PCI0.LPC0.RTC.RTCH), FromBCD (\_SB.PCI0.LPC0.RTC.RTCM))
                 }
             }
 
