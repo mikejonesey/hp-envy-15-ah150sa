@@ -1,0 +1,4 @@
+7205c7205
+<                         If ((WLVD != Zero) && (WLVD != 0xFFFF))
+---
+>                         If ((\_SB.WMID.WLVD != Zero) && (\_SB.WMID.WLVD != 0xFFFF))

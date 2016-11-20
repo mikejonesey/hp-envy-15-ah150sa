@@ -1,0 +1,8 @@
+2704a2705,2711
+> 
+> 		    Method (_BQC, 0, NotSerialized)  // _BQC: Brightness Query Current
+> 		    {
+> 			Store("Debug: _SB.PCI0.VGA.LCD._BQC", Debug)
+> 		        Return (0x14) // = 20%, v=9/49, actual=51/255
+> 		    }
+> 
