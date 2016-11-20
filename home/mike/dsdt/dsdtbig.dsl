@@ -6059,8 +6059,7 @@ DefinitionBlock ("", "DSDT", 0x01, "HPQOEM", "SLIC-MPC", 0x00040000)
 
                 Method (ALID, 0, NotSerialized)
                 {
-//                    Return (^^^LID._LID ())
-                    Return (^^^LID._LID)
+                    Return (^^^LID._LID ())
                 }
 
                 Method (ALED, 1, NotSerialized)
@@ -12525,9 +12524,6 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
-
-    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
-
     /*
      * iASL Warning: There were 27 external control methods found during
      * disassembly, but only 0 were resolved (27 unresolved). Additional
@@ -12556,7 +12552,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
      * required for each:
      */
 //    External (_SB_.ALIB, IntObj)
-    External (_SB_.LID_._LID, IntObj)
+    External (_SB_.LID_._LID, MethodObj)
     External (_SB_.PCI0.GFX0.VGA_.AFN0, MethodObj)    // Warning: Unknown method, guessing 0 arguments
     External (_SB_.PCI0.GFX0.VGA_.AFN1, MethodObj)    // Warning: Unknown method, guessing 1 arguments
     External (_SB_.PCI0.GFX0.VGA_.AFN2, MethodObj)    // Warning: Unknown method, guessing 2 arguments
@@ -12665,7 +12661,7 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
             M157 = 0x0C
             M158 = One
             M159 = M101 /* External reference */
-            If (!CondRefOf (\_SB.LID._LID, Local1))
+            If (!CondRefOf (\_SB.LID._LID(), Local1))
             {
                 M102 &= 0xFFFFFFF7
             }
@@ -12823,9 +12819,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
             Local1 = M182 /* \_SB_.PCI0.VGA_.AF03.M182 */
             Local1 &= 0x8B
             Local2 = M183 /* \_SB_.PCI0.VGA_.AF03.M183 */
-            If (CondRefOf (\_SB.LID._LID, Local4))
+            If (CondRefOf (\_SB.LID._LID(), Local4))
             {
-                Local0 = \_SB.LID._LID /* External reference */
+                Local0 = \_SB.LID._LID() /* External reference */
                 Local2 &= 0xFFFFFFFE
                 Local2 |= Local0
             }
@@ -12884,9 +12880,9 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
             CreateByteField (ATIB, 0x02, M188)
             M157 = 0x03
             Local1 = Zero
-            If (CondRefOf (\_SB.LID._LID, Local4))
+            If (CondRefOf (\_SB.LID._LID(), Local4))
             {
-                Local0 = \_SB.LID._LID /* External reference */
+                Local0 = \_SB.LID._LID() /* External reference */
                 Local1 = (Local0 ^ One)
             }
 
@@ -13945,9 +13941,6 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
-
-    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
-
     /*
      * iASL Warning: There were 2 external control methods found during
      * disassembly, but only 0 were resolved (2 unresolved). Additional
@@ -15172,9 +15165,6 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
 {
-
-    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
-
     /*
      * iASL Warning: There were 14 external control methods found during
      * disassembly, but only 0 were resolved (14 unresolved). Additional
@@ -16197,9 +16187,6 @@ DefinitionBlock ("", "SSDT", 1, "HPQOEM", "INSYDE  ", 0x00000001)
  */
 DefinitionBlock ("", "SSDT", 2, "HPQOEM", "INSYDE  ", 0x00000002)
 {
-
-    External (\_SB.WLBU._STA, MethodObj)    // 0 Arguments
-
     /*
      * iASL Warning: There was 1 external control method found during
      * disassembly, but only 0 were resolved (1 unresolved). Additional
